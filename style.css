@@ -210,8 +210,13 @@ footer {
 	color: var(--cT3);
 	margin-top: 3em;
 	margin-bottom: 1em;
+	padding-top: .4em;
 	border-top: 1px solid;
 	border-color: var(--cT3);
+}
+
+footer p {
+	margin: .2em;
 }
 
 
