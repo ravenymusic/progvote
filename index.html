@@ -43,11 +43,11 @@
 
 		function wat() {
 			if($('content.wat.h')) {
-				$('content.form').classList.add('h');
+				$$('content').forEach(e => e.classList.add('h'));
 				$('content.wat').classList.remove('h');
 			}
 			else {
-				$('content.wat').classList.add('h');
+				$$('content').forEach(e => e.classList.add('h'));
 				$('content.form').classList.remove('h');
 			}
 
@@ -79,18 +79,24 @@
 			return s ? s.replace(/[\?\n\r\t]/g, '') : '';
 		}
 
-		function composeEmail() {
+		function composeEmail(raw = false) {
 			return getFields()
-			.map(({name, val}) => encodeURI(safeString(`${name}: ${val || '—'}`)))
-			.join('%0D%0A');
+			.map(({name, val}) => `${name}: ${val || '—'}`)
+			.map(row => raw ? row : encodeURI(safeString(row)))
+			.join(raw ? '\n' : '%0D%0A');
 		}
 
 		function createEmail() {
 			alert(getTemplate(window.pageLang === 'ru' ? 'farewell-ru' : 'farewell-en'))
-			location.href='mailto:prog@futurenet.com?subject=vote&body='+composeEmail();
+			location.href='mailto:prog@futurenet.com?subject=vote&body=' + composeEmail();
+
+			setTimeout(() => {
+				$('content.message .stillhere').classList.remove('h');
+				showMessage();
+			},1000)
 		}
 
-		function getLink() {
+		function createLink() {
 			let data = encodeURI(
 				JSON.stringify(
 					getFields()
@@ -99,16 +105,31 @@
 				)
 			);
 
-			let t = $('#linkContainer');
-			t.value = `${URL}/#data=${data}`;
-
-			$('.prefilledLink').classList.remove('h');
-			t.classList.add('open');
-
-			t.focus();
-			t.select();
+			$('#linkContainer').value = `${URL}/#data=${data}`;
 
 			return false;
+		}
+
+		function showMessage() {
+			let mt = $('content.message textarea#messageText');
+
+			mt.value = composeEmail('raw');
+			createLink();
+
+			$$('content').forEach(c => c.classList.add('h'));
+			$('content.message').classList.remove('h');
+
+			mt.focus();
+			mt.select();
+
+			window.scrollTo(0, 0);
+
+			return false;
+		}
+
+		function backToForm() {
+			$$('content').forEach(c => c.classList.add('h'));
+			$('content.form').classList.remove('h');
 		}
 
 		function readData() {
@@ -210,19 +231,64 @@
 					<span ln=ru>✉️ Создать email</span>
 				</button>
 
-				<a href=# onclick='return getLink()'>Get a pre-filled link</a>
-
-				<div class='prefilledLink h'>
-					<textarea readonly id=linkContainer></textarea>
-					<span ln=en>Use your favourite link-shortener service</span>
-					<span ln=ru>Используйте ваш любимый сервис сокращения ссылок</span>
-				</div>
-
-				<button class=h onclick=showTextAndAddress()>
-					<span ln=en>Show message text and address</span>
-					<span ln=ru>Показать текст письма и адрес</span>
-				</button>
+				<a href=# onclick='return showMessage()'>Show message (manual mode)</a>
 			</div>
+		</content>
+
+		<content class='message h'>
+			<div class='stillhere h'>
+				<p ln=en>
+					⚠️ If no email app appeared after clicking the button, it looks like
+					your system is not handling email links.
+				</p>
+				<p ln=en>
+					You can still copy the address and the message below,
+					and paste them into a new email in your email app or service.
+				</p>
+				<p ln=ru>
+					⚠️ Если после нажатия кнопки у вас не открылся почтовый клиент
+					с новым письмом, видимо ваша операционная система не умеет обрабатывать
+					email-ссылки должным образом.
+				<p ln=ru>
+					Но вы всё ещё можете скопировать адрес и сообщение ниже и отправить их
+					вручную из вашего почтового клиента.
+				</p>
+			</div>
+
+			<div>
+				<span ln=en>Address:</span>
+				<span ln=ru>Адрес:</span>
+				<a href=mailto:prog@futurenet.com>prog@futurenet.com</a>
+			</div>
+
+			<div>
+				<span ln=en>Message:</span>
+				<span ln=ru>Сообщение:</span>
+				<textarea id=messageText readonly></textarea>
+			</div>
+
+			<hr>
+
+			<div class='prefilledLink'>
+				<p ln=en>
+					Below is the link to this page with the pre-filled form,
+					you can share it to your friends in case you wanted
+					to ask them to support your favourite artists, etc.
+					But please think twice if you really want to do this.
+				</p>
+				<p ln=ru>
+					НИже — ссылка на эту страницу с уже предзаполненной формой,
+					на случай если вы хотели поделиться этим с друзьями и предложить им
+					поддержать ваших любимых музыкантов.
+					Но только пожалуйста, подумайте дважды, хотите ли вы этого.
+				</p>
+				<textarea readonly id=linkContainer></textarea>
+			</div>
+			<button onclick=backToForm()>
+				<span ln=en>← Back to form</span>
+				<span ln=ru>← Назад к форме</span>
+			</button>
+
 		</content>
 
 		<content class='wat h'>
@@ -303,7 +369,7 @@
 
 				<p><em>// Artyom, aka Raveny</em></p>
 
-				<p><button onclick=wat()>Very well, show the form</button></p>
+				<p><button onclick=wat()>← Back to form</button></p>
 			</div>
 			<div ln=ru>
 				<p>
@@ -378,7 +444,7 @@
 
 				<p><em>// Артём (Raveny)</em></p>
 
-				<p><button onclick=wat()>Ясно понятно, покажите форму</button></p>
+				<p><button onclick=wat()>← Назад к форме</button></p>
 			</div>
 		</content>
 

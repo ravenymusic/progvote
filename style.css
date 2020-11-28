@@ -15,6 +15,7 @@ body, html {
   --c1: #0e80df;
   --c2: #fc60ca;
   --c3: #932a71;
+  --c4: #d2b651;
   --cT1: #f0f0f0;
   --cT2: #ccc;
   --cT3: #888;
@@ -163,30 +164,44 @@ content.form {
 			padding: 1em;
 		}
 
-		content.form .prefilledLink {
-			flex-basis: 100%;
+content.message {
+}
+	content.message .prefilledLink {
+		flex-basis: 100%;
+		font-size: .8em;
+		color: var(--cT2);
+	}
 
-			font-size: .8em;
-			color: var(--cT2);
-		}
+	content.message textarea {
+		display: block;
+		width: calc(100% - 4em);
+		margin-bottom: 2em;
+		border: 0;
+		font-size: .7em;
+		height: 8em;
+		padding: 2em;
+		background-color: var(--cB2);
+		color: var(--cT2);
+	}
 
-		content.form #linkContainer {
-			display: block;
-			width: calc(100% - 4em);
-			margin-top: 2em;
-			margin-bottom: .5em;
-			border: 0;
-			padding: 0;
-			font-size: .7em;
-			height: 0;
-			background-color: var(--cB2);
-			color: var(--cT2);
-		}
+	content.message #messageText {
+		height: 15em;
+		margin-top: .5em;
+	}
 
-		content.form #linkContainer.open {
-			height: 10em;
-			padding: 2em;
-		}
+	content.message button {
+		width: 100%;
+		font-size: 1em;
+		color: var(--cT1);
+		background-color: var(--cB2);
+		border: 0;
+	}
+
+	content.message .stillhere {
+		color: var(--c4);
+
+		margin-bottom: 2em;
+	}
 
 content.wat {
 	font-size: 1.2em;
