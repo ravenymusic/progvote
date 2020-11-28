@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+	<title>PROG 2020 Poll</title>
+	<meta charset=utf-8>
+	<meta name=theme-color content=#202020>
+	<link rel=stylesheet type=text/css href=style.css>
+	<style>
+		body {
+			background-color: #202020;
+		}
+		.h{
+			display: none;
+		}
+	</style>
+	<script type=tpl name=farewell-en>Don't forget to actually send the message in the email app! Good luck!</script>
+	<script type=tpl name=farewell-ru>Не забудьте нажать кнопку "Отправить" в вашем почтовом приложении! Удачи!</script>
+	<script>
+		const $ = (...args) => document.querySelector(...args),
+			$$ = (...args) => Array.from(document.querySelectorAll(...args)),
+			af = Array.from,
+			URL = 'https://raveny.net/progvote';
+
+		function russiansCame() {
+			if(window.navigator.language.search(/ru/ig) !== -1)
+				return true;
+
+			let ru = window.navigator.languages.join().search(/ru/ig);
+
+			if(ru !== -1 && ru < 12)
+				return true;
+
+			return false;
+		}
+
+		function getTemplate(name, text = true) {
+			let s = $(`script[type=tpl][name=${name}]`).innerText;
+
+			return text
+				? s.replace(/\t/g, '').trim()
+				: s;
+		}
+
+		function wat() {
+			if($('content.wat.h')) {
+				$('content.form').classList.add('h');
+				$('content.wat').classList.remove('h');
+			}
+			else {
+				$('content.wat').classList.add('h');
+				$('content.form').classList.remove('h');
+			}
+
+			window.scrollTo(0, 0);
+		}
+
+		function switchLanguage(lang, ev) {
+			window.pageLang = lang;
+			$$('[ln]').forEach(e => e.classList.add('h'));
+			$$(`[ln=${lang}]`).forEach(e => e.classList.remove('h'));
+
+			$$('header .lang a').forEach(a => a.classList.remove('current'));
+			$(`header .lang a[href="#${lang}"]`).classList.add('current');
+
+			if(ev) ev.preventDefaut();
+
+			return false;
+		}
+
+		function getFields() {
+			return $$('.form label').map(l => ({
+				id: l.getAttribute('for'),
+				name: l.innerText.toUpperCase(),
+				val: $(`.form input#${l.getAttribute('for')}`).value
+			}));
+		}
+
+		function safeString(s) {
+			return s.replace(/[\?\n\r\t]/g, '');
+		}
+
+		function composeEmail() {
+			return getFields()
+			.map(({name, val}) => encodeURI(safeString(`${name}: ${val || '—'}`)))
+			.join('%0D%0A');
+		}
+
+		function createEmail() {
+			alert(getTemplate(window.pageLang === 'ru' ? 'farewell-ru' : 'farewell-en'))
+			location.href='mailto:prog@futurenet.com?subject=vote&body='+composeEmail();
+		}
+
+		function getLink() {
+			let data = encodeURI(
+				JSON.stringify(
+					getFields().map(({id, val}) => ({id, val: safeString(safeString)}))
+				)
+			);
+
+			let t = $('#linkContainer');
+			t.value = `${URL}/#data=${data}`;
+
+			$('.prefilledLink').classList.remove('h');
+			t.classList.add('open');
+
+			t.focus();
+			t.select();
+
+			return false;
+		}
+
+		function readData() {
+			let data = window.location.hash.match(/(data=)(.+)/);
+
+			if(!data || !data[2] || data[2] === undefined)
+				return false;
+
+			try {
+				data = JSON.parse(decodeURI(data[2]));
+			}
+			catch(e) {
+				console.warn('found some data in hash, but could not parse it', e);
+
+				return false;
+			}
+
+			return data.forEach(i => $(`content.form #${i.id}`).value = i.val);
+		}
+
+		function initPage() {
+			switchLanguage(russiansCame() ? 'ru' : 'en');
+			readData();
+
+			// all set, go
+			$('body').classList.remove('h');
+		}
+
+		window.addEventListener('load', initPage);
+	</script>
+</head>
+<body class=h>
+	<container>
+		<header>
+			<div class=left>
+				<h3 class=title ln=en>Vote for musicians in PROG Mag</h3>
+				<h3 class=title ln=ru>Голосовать за музыкантов в PROG Mag</h3>
+				<sub ln=en><strong>unofficial</strong> poll email composer</sub>
+				<sub ln=ru><strong>неоффициальная</strong> создавалка голосовательных email-ов</sub>
+			</div>
+			<div class=right>
+				<div class=lang>
+					<a href=#en onclick='return switchLanguage("en")' title='Switch to English'>🇬🇧</a>
+					<a href=#ru onclick='return switchLanguage("ru")' title='Переключиться на Русский'>🇷🇺</a>
+				</div>
+				<div class=wat>
+					<a ln=en href=#wat class=help onclick=wat()>what's this?</a>
+					<a ln=ru href=#wat class=help onclick=wat()>что это?</a>
+				</div>
+			</div>
+		</header>
+
+		<content class=form>
+			<label for=A>Best Band</label>
+			<input type=text id=A>
+
+			<label for=B>Album Of The Year</label>
+			<input type=text id=B>
+
+			<label for=C>Female Vocalist</label>
+			<input type=text id=C>
+
+			<label for=D>Male Vocalist</label>
+			<input type=text id=D>
+
+			<label for=E>Guitarist</label>
+			<input type=text id=E>
+
+			<label for=F>Bassist</label>
+			<input type=text id=F>
+
+			<label for=G>Keyboard Player</label>
+			<input type=text id=G>
+
+			<label for=H>Drummer</label>
+			<input type=text id=H>
+
+			<label for=I>Reissue Of The Year</label>
+			<input type=text id=I>
+
+			<label for=J>Event Of The Year</label>
+			<input type=text id=J>
+
+			<label for=K>Disappointment Of The Year</label>
+			<input type=text id=K>
+
+			<label for=L>Best Unsigned Band</label>
+			<input type=text id=L>
+
+			<label for=M>Prog Person Of The Year</label>
+			<input type=text id=M>
+
+			<label for=N>Prog’s Unsung Hero</label>
+			<input type=text id=N>
+
+			<div class=buttons>
+				<button onclick=createEmail()>
+					<span ln=en>✉️ Create email</span>
+					<span ln=ru>✉️ Создать email</span>
+				</button>
+
+				<a href=# onclick='return getLink()'>Get a pre-filled link</a>
+
+				<div class='prefilledLink h'>
+					<textarea readonly id=linkContainer></textarea>
+					<span ln=en>Use your favourite link-shortener service</span>
+					<span ln=ru>Используйте ваш любимый сервис сокращения ссылок</span>
+				</div>
+
+				<button class=h onclick=showTextAndAddress()>
+					<span ln=en>Show message text and address</span>
+					<span ln=ru>Показать текст письма и адрес</span>
+				</button>
+			</div>
+		</content>
+
+		<content class='wat h'>
+			<div ln=en>
+				<p>
+					PROG Mag is
+					<a href='https://www.loudersound.com/news/vote-in-the-2020-prog-magazine-readers-poll' target=_blank>running a poll</a>
+					among readers,
+					listeners of Progressive Rock and similar music.
+				</p>
+				<p>
+					The way they run it, though, is a little bit unsettling,
+					considering it's almost 2021:
+					you need to send an email formatted in a certain way.
+				</p>
+				<p>
+					I mean, I personally love emails
+					and I think they're better than all existing messengers, but...
+					what about normal people? :)
+				</p>
+				<p>
+					So, I decided to create this page to help my listeners
+					and other people to compose and send an email in an easy way.
+				</p>
+				<p>
+					After filling this form you'll have a pre-composed email message
+					in your email app. It works best on smartphones, btw.
+				</p>
+				<p>
+					If you still don't understand what's PROG,
+					who are all the pre-selected artists you see in the form (if there are any),
+					what are the albums and events... well, you can google them,
+					or ask the person who gave you the link.
+				<p>
+					Should you vote if you don't know what it's all about? IDK.
+				</p>
+
+				<hr>
+
+				<p>
+					⚠️ <strong>IMPORTANT</strong>
+					<br>
+					PROG Mag is not affiliated with me or with this website in any way.
+					No one asked me to create this page, it was my pure desire to make our world better.
+				</p>
+				<p>
+					Everything you've seen in the pre-filled fields is encoded in the link you visited,
+					the only person responsible for this is the one who sent you this link.
+				</p>
+				<p>
+					You're free and welcome to change everything before pushing the main button,
+					and you can even create your own link with your choices and share it to your friends,
+					there's a button for this (not the main one).
+				</p>
+
+				<p>
+					⚠️ <strong>EVEN MORE IMPORTANT</strong>
+					<br>
+					This webpage doesn't send any emails on your behalf.
+				</p>
+				<p>
+					Anything you enter into the fields will be sent to your email app only
+					after you press the button. If you don't click that button,
+					everything will be lost once you close the web-browser tab.
+				</p>
+				<p>
+					This website will never know anything about your email, the email app,
+					or whether you'll actually send the composed letter at all.
+				</p>
+				<p>
+					No cookies are stored on this page.
+					This page is free from web-analytics and trackers of any kind.
+				</p>
+
+				<hr>
+
+				<p>Have a good day!</p>
+
+				<p><em>// Artyom, aka Raveny</em></p>
+
+				<p><button onclick=wat()>Very well, show the form</button></p>
+			</div>
+			<div ln=ru>
+				<p>
+					Журнал PROG
+					<a href='https://www.loudersound.com/news/vote-in-the-2020-prog-magazine-readers-poll' target=_blank>проводит голосование</a>
+					среди своих читателей,
+					почитателей музыки вокруг и около Progressive Rock.
+				</p>
+				<p>
+					К сожалению, способ, которым они решили это провести...
+					несколько удивителен для почти уже 2021 года:
+					вам нужно отправить email определённого формата.
+				</p>
+				<p>
+					В смысле, я конечно очень люблю email,
+					и считаю что они лучше любых существующих мессенджеров, но всё же...
+				</p>
+				<p>
+					Вот я и решил сделать эту страничку.
+					Здесь можно более-менее удобно заполнить всё и создать email.
+				</p>
+				<p>
+					После заполнения полей нужно будет только нажать кнопку "Oтправить"
+					в email-приложении. Лучше всего это работает на смартфонах, кстати.
+				</p>
+				<p>
+					Если вы не не знаете что такое PROG,
+					или кто все уже указанные в полях музыканты, альбомы или события —
+					можете погуглить или спросить того, кто прислал вам ссылку.
+				</p>
+				<p>
+					Нужно ли вам голосовать, если вы не понимаете о чём это всё? Не знаю.
+				</p>
+
+				<hr>
+
+				<p>
+					⚠️ <strong>ВАЖНО</strong>
+					<br>
+					Это всё никак не связано с журналом PROG, меня никто не просил это делать.
+					Эта страница появилась исключительно благодаря моему неуёмному желанию делать всё
+					вокруг проще и лучше.
+				</p>
+				<p>
+					Всё что было указано в полях когда страница открылась записано в вашей ссылке,
+					почему это там указано можно спросить у человека, который вам эту ссылку прислал.
+				</p>
+				<p>
+					Вы можете изменить всё что написано в этих полях, и даже можете сделать свою ссылку
+					с вашими вариантами ответов, там внизу формы кнопка есть для этого.
+				</p>
+				<p>
+					⚠️ <strong>ЕЩË ВАЖНЕЕ</strong>
+					<br>
+					Этот сайт никуда ничего не отправляет.
+				</p>
+				<p>
+					Всё что вы введёте в поля уйдёт в ваш почтовый клиент по нажатию кнопки и больше никуда.
+					Если не нажмёте кнопку, то всё исчезнет навсегда как только вы закроете страницу.
+				</p>
+				<p>
+					Этому сайту не будет известно ничего о вашей почте, откуда вы отправите письмо
+					и отправите ли вы его вообще.
+				</p>
+				<p>
+					Никаких cookies тут не сохраняется. Нет никакой аналитики и трекеров.
+				</p>
+
+				<hr>
+
+				<p>Хорошего дня!</p>
+
+				<p><em>// Артём (Raveny)</em></p>
+
+				<p><button onclick=wat()>Ясно понятно, покажите форму</button></p>
+			</div>
+		</content>
+
+		<footer>
+			<p ln=en>Made by Artyom (aka Raveny). PROG is not in any way affiliated with this.</p>
+			<p ln=ru>Сделано Артёмом (Raveny). PROG не имеет к этому никакого отношения.</p>
+		</footer>
+	</container>
+</body>
+</html>

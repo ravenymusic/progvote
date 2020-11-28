@@ -1,0 +1,226 @@
+html {
+	height: 100%;
+}
+
+body, html {
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	min-height: 100%;
+	font-size: 18px;
+	font-family: Helvetica, Arial, 'Open Sans', sans-serif;
+}
+
+:root {
+  --c1: #0e80df;
+  --c2: #fc60ca;
+  --c3: #932a71;
+  --cT1: #f0f0f0;
+  --cT2: #ccc;
+  --cT3: #888;
+  --cB1: #202020;
+  --cB2: #333;
+}
+
+body {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	justify-content: center;
+	color: var(--cT1);
+}
+
+container {
+	width: 35em;
+	display: flex;
+	flex-direction: column;
+	flex-wrap: nowrap;
+	justify-content: center;
+}
+
+a {
+	color: var(--c1);
+	text-decoration: underline;
+}
+a:hover {
+	text-decoration: none;
+}
+
+a.help {
+	text-decoration: dashed;
+	cursor: pointer;
+}
+
+h3 {
+	margin: 0;
+	margin-right: 1em;
+	font-weight: 500;
+}
+
+hr {
+	border: 1px solid;
+	border-color: var(--cB2);
+	margin: 1em 0;
+}
+
+p {
+	margin-top: 0;
+	margin-bottom: 1em;
+}
+
+button {
+	border: 0;
+	cursor: pointer;
+	padding: 1em;
+	font-size: 1.5em;
+	opacity: .7;
+}
+
+button:hover {
+	opacity: 1;
+}
+
+header {
+	font-size: 1.2em;
+	width: 100%;
+	margin-top: 1em;
+	margin-bottom: 2em;
+	padding-bottom: .5em;
+	border-bottom: 1px solid;
+	border-color: var(--cB2);
+}
+	header .left {
+		float: left;
+	}
+	header .right {
+		float: right;
+		text-align: right;
+	}
+	header .title {
+		color: var(--c2);
+	}
+	header sub {
+		color: var(--cT3);
+		font-size: .6em;
+	}
+	header .lang {
+		margin-bottom: .65em;
+	}
+		header .lang a {
+			text-decoration: none;
+			opacity: 30%;
+		}
+		header .lang a:hover {
+			opacity: 100%;
+		}
+
+		header .lang a.current {
+			opacity: 80%;
+		}
+
+	header .wat {
+		font-size: .6em;
+	}
+
+content.form {
+	width: 100%;
+}
+	content.form label,
+	content.form input {
+		display: block;
+		margin-bottom: .4em;
+		color: var(--cT2);
+	}
+
+	content.form input {
+		width: calc(100% - 1em);
+		font-size: 1.2em;
+		margin-bottom: 2em;
+		padding: .5em;
+		border: 1px solid;
+		border-color: var(--cT3);
+		background-color: var(--cB2);
+		color: var(--cT1);
+	}
+
+	content.form .buttons {
+		margin: 2em 0;
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
+		flex-wrap: wrap;
+	}
+		content.form .buttons button {
+			font-weight: 500;
+			color: var(--cT1);
+
+			background-color: var(--c3);
+		}
+
+		content.form .buttons a {
+			display: block;
+			margin-top: 1em;
+			padding: 1em;
+		}
+
+		content.form .prefilledLink {
+			flex-basis: 100%;
+
+			font-size: .8em;
+			color: var(--cT2);
+		}
+
+		content.form #linkContainer {
+			display: block;
+			width: calc(100% - 4em);
+			margin-top: 2em;
+			margin-bottom: .5em;
+			border: 0;
+			padding: 0;
+			font-size: .7em;
+			height: 0;
+			background-color: var(--cB2);
+			color: var(--cT2);
+		}
+
+		content.form #linkContainer.open {
+			height: 10em;
+			padding: 2em;
+		}
+
+content.wat {
+	font-size: 1.2em;
+	color: var(--cT2);
+	line-height: 1.5em;
+}
+	content.wat p:last-child {
+		text-align: center;
+		width: 100%;
+	}
+	content.wat button {
+		width: 100%;
+		font-size: 1em;
+		color: var(--cT1);
+		background-color: var(--cB2);
+		border: 0;
+	}
+
+footer {
+	font-size: .8em;
+	color: var(--cT3);
+	margin-top: 3em;
+	margin-bottom: 1em;
+	border-top: 1px solid;
+	border-color: var(--cT3);
+}
+
+
+@media screen and (orientation:portrait) {
+	body {
+		font-size: 1.5em;
+	}
+
+	container {
+		width: 90%;
+	}
+}
