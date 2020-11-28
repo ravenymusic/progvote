@@ -93,7 +93,9 @@
 		function getLink() {
 			let data = encodeURI(
 				JSON.stringify(
-					getFields().map(({id, val}) => ({id, val: safeString(val)}))
+					getFields()
+					.filter(({val}) => val && val.length)
+					.map(({id, val}) => ({id, val: safeString(val)}))
 				)
 			);
 
