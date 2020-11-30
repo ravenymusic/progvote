@@ -88,7 +88,7 @@
 
 		function createEmail() {
 			alert(getTemplate(window.pageLang === 'ru' ? 'farewell-ru' : 'farewell-en'))
-			location.href='mailto:prog@futurenet.com?subject=vote&body=' + composeEmail();
+			location.href='mailto:prog@futurenet.com?body=' + composeEmail();
 
 			setTimeout(() => {
 				$('content.message .stillhere').classList.remove('h');
